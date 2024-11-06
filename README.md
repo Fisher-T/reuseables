@@ -1,2 +1,2 @@
 # Reuseable-Flutter
- Libary of Reuseable Flutter Widgets
+ Library of Reuseable Flutter Widgets
