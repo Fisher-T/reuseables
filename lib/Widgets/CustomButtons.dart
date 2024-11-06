@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class CustomBackNavigatorButton extends StatefulWidget {
   final PageController? pageController;
 
-  CustomBackNavigatorButton({
+  const CustomBackNavigatorButton({
     this.pageController,
     Key? key,
   }) : super(key: key);
