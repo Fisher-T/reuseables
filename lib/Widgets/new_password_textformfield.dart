@@ -1,6 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+//--------------------------------------------------------------------------
+// Validators
+//--------------------------------------------------------------------------
+final validEmail = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@");
+final validUppercase = RegExp(r'(?=.?[A-Z])');
+final validLowercase = RegExp(r'(?=.?[a-z])');
+final validNumber = RegExp(r'(?=.?[0-9])');
+final validSymbol = RegExp(r'(?=.?[!@#$&~.])');
+
+//--------------------------------------------------------------------------
+// Bool
+//--------------------------------------------------------------------------
+bool isLastPage = false;
+bool isVisible = false;
+bool isLoading = false;
+bool _hidePassword = true;
+
+//--------------------------------------------------------------------------
+// New Password Text From Field
+//--------------------------------------------------------------------------
 class NewPasswordTextFormField extends StatefulWidget {
   final dynamic appUser;
   final TextEditingController passwordTextController;
@@ -16,20 +36,6 @@ class NewPasswordTextFormField extends StatefulWidget {
   State<NewPasswordTextFormField> createState() =>
       _NewPasswordTextFormFieldState();
 }
-
-bool isLastPage = false;
-bool isVisible = false;
-bool isLoading = false;
-bool _hidePassword = true;
-
-//--------------------------------------------------------------------------
-// Validators
-//--------------------------------------------------------------------------
-final validEmail = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@");
-final validUppercase = RegExp(r'(?=.?[A-Z])');
-final validLowercase = RegExp(r'(?=.?[a-z])');
-final validNumber = RegExp(r'(?=.?[0-9])');
-final validSymbol = RegExp(r'(?=.?[!@#$&~.])');
 
 class _NewPasswordTextFormFieldState extends State<NewPasswordTextFormField> {
   @override
@@ -122,6 +128,68 @@ class _NewPasswordTextFormFieldState extends State<NewPasswordTextFormField> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class EmailTextFormField extends StatefulWidget {
+  final dynamic appUser;
+  final TextEditingController emailTextController;
+  final FocusNode emailFocusNode;
+  final FocusNode nextFocusNode;
+
+  const EmailTextFormField(this.appUser, this.emailTextController,
+      this.emailFocusNode, this.nextFocusNode,
+      {Key? key})
+      : super(key: key);
+
+  @override
+  State<EmailTextFormField> createState() => _EmailTextFormFieldState();
+}
+
+class _EmailTextFormFieldState extends State<EmailTextFormField> {
+  @override
+  Widget build(BuildContext context) {
+    return
+        //--------------------------------------------------------
+        // Email
+        //--------------------------------------------------------
+        Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 5,
+        horizontal: 20,
+      ),
+      child: TextFormField(
+        textInputAction: TextInputAction.next,
+        keyboardType: TextInputType.emailAddress,
+        controller: widget.emailTextController,
+        focusNode: widget.emailFocusNode,
+        onTap: () => FocusScope.of(context).hasPrimaryFocus,
+        inputFormatters: [FilteringTextInputFormatter.deny(' ')],
+        onFieldSubmitted: (v) {
+          FocusScope.of(context).requestFocus(widget.nextFocusNode);
+        },
+        validator: (value) {
+          if (value == '') {
+            return 'Username cannot be empty';
+          }
+          if (!validEmail
+              .hasMatch(value.toString().toLowerCase().replaceAll(' ', ''))) {
+            return 'Username Must be an Email';
+          }
+          return null;
+        },
+        onChanged: (input) {
+          setState(() =>
+              widget.appUser?.email = input.toLowerCase().replaceAll(' ', ''));
+        },
+        onSaved: (input) => widget.appUser?.email = input,
+        decoration: const InputDecoration(
+          labelText: 'Email',
+          hintText: 'support@rogueapp.ca',
+          prefixIcon: Icon(Icons.alternate_email),
         ),
       ),
     );
